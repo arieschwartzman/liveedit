@@ -336,11 +336,13 @@ ctre = {
 	    }
 	},
 
-    // the function selects specific parent element of the highlighted elements.
-	getParents: function () {
-	    if (ctre.markedElement) {
+    // the function finds the highlight element class name and send it to admin through PubNub
+	changeBorder: function () {
+	    if (ctre.contextMarkedElement) {
+	        chrome.extension.sendMessage({ action: 'changeBorder', msgName: ctre.contextMarkedElement.className });
 	    }
 	},
+
 
 	init: function()
 	{
@@ -365,9 +367,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         ctre.gotoAdmin();
     }
 
-    if (request.action == 'getParents') {
-        ctre.getParents();
-    }
 });
 
 

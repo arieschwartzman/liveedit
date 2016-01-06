@@ -28,10 +28,10 @@ pubnub.subscribe({
     }
 });
 
-function publish(msgName) {
+function publish(msgName, msgData) {
     pubnub.publish({
         channel: "theme_update",
-        message: { "goto": msgName }
+        message: { msgName: msgData }
     });
 
 }
@@ -50,24 +50,13 @@ function gotoOnClick(info, tab) {
     }
 }
 
-function parentsOnClick(info, tab) {
+function changeBorderOnClick(info, tab) {
     if (tab) {
-        chrome.tabs.sendMessage(tab.id, { action: "getParents" }, function (response) { });
+        chrome.tabs.sendMessage(tab.id, { action: "changeBorder" }, function (response) { });
     }
 }
 
 function setActive() {
-    var liveEditItem = chrome.contextMenus.create({
-        "title": "LiveEdit", "onclick": function (info, tab) {
-            console.log('LiveEdit');
-        }
-    });
-
-    var gotoItem = chrome.contextMenus.create(
-      {"title": "Goto", "parentId": liveEditItem, "onclick": gotoOnClick});
-
-    var getParentsItem = chrome.contextMenus.create(
-  { "title": "getParents", "parentId": liveEditItem, "onclick": parentsOnClick });
 
     chrome.browserAction.setIcon({ path: "icon_active.png" });
 	chrome.browserAction.setTitle( { title: "Click to start spying on element [active]" });
@@ -104,6 +93,21 @@ function checkActive()
 }
 
 
+chrome.runtime.onInstalled.addListener(function() {
+    var liveEditItem = chrome.contextMenus.create({
+        "title": "LiveEdit", "onclick": function (info, tab) {
+            console.log('LiveEdit');
+        }
+    });
+
+    var gotoItem = chrome.contextMenus.create(
+      { "title": "Goto", "parentId": liveEditItem, "onclick": gotoOnClick });
+
+    var gotoItem = chrome.contextMenus.create(
+      { "title": "Border", "parentId": liveEditItem, "onclick": changeBorderOnClick });
+
+});
+
 chrome.browserAction.onClicked.addListener(function() {
 	sendMsg( { 'action': 'toggle' } );
 });
@@ -118,7 +122,14 @@ chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
 	else if (msg.action == 'gotoAdmin') {
 	    console.log("BackgroundMsg --> ClassName: " + msg.msgName);
 
-	    publish(msg.msgName);
+	    publish("goto" ,msg.msgName);
+	}
+
+	    // Send border size through pubnub
+	else if (msg.action == 'changeBorder') {
+	    console.log("BackgroundMsg --> changeBorder");
+
+	    publish("changeBorder", msg.msgName);
 	}
 });
 
