@@ -10,21 +10,45 @@ function sendMsg(values)
 	});
 }
 
-function setActive()
-{
-	chrome.browserAction.setIcon( { path: "icon_active.png" } );
+function gotoOnClick(info, tab) {
+    if (tab)
+    {
+        chrome.tabs.sendMessage(tab.id, { action: "goto" }, function (response) { });
+    }
+}
+
+function parentsOnClick(info, tab) {
+    if (tab) {
+        chrome.tabs.sendMessage(tab.id, { action: "getParents" }, function (response) { });
+    }
+}
+
+function setActive() {
+    var liveEditItem  = chrome.contextMenus.create({
+        "title": "LiveEdit", "onclick": function (info, tab) {
+            console.log('LiveEdit');
+        }
+    });
+
+    var gotoItem = chrome.contextMenus.create(
+      {"title": "Goto", "parentId": liveEditItem, "onclick": gotoOnClick});
+
+    var getParentsItem = chrome.contextMenus.create(
+  { "title": "getParents", "parentId": liveEditItem, "onclick": parentsOnClick });
+
+    chrome.browserAction.setIcon({ path: "icon_active.png" });
 	chrome.browserAction.setTitle( { title: "Click to start spying on element [active]" });
 }
 
-function setInactive()
-{
+function setInactive() {
 	chrome.browserAction.setIcon( { path: "icon.png" } );
 	chrome.browserAction.setTitle( { title: "Click to start spying on element" });
+	chrome.contextMenus.RemoveAll();
 }
 
 function checkActive()
 {
-	chrome.tabs.getSelected(null, function(tab) {
+	chrome.tabs.getSelected(0, function(tab) {
 		if (tab.url.substr(0,4) != 'http')
 		{
 			chrome.browserAction.setIcon( { path: "icon.png" } );
@@ -45,6 +69,7 @@ function checkActive()
 		});
 	});
 }
+
 
 chrome.browserAction.onClicked.addListener(function() {
 	sendMsg( { 'action': 'toggle' } );

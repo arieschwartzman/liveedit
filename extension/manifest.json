@@ -19,7 +19,7 @@
 		"run_at": "document_end"
 	} ],
 	"permissions": [
-		"tabs", "http://*/*"
+		"tabs", "contextMenus", "http://*/*"
 	],
 	"incognito": "spanning"
 }

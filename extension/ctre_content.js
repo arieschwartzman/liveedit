@@ -4,16 +4,18 @@
 */
 
 ctre = {
-	hoveredElement: false,
-	markedElement: false,
-	hideHistory: [],
-	targetingMode: false,
-	transpose: 0, // how far to travel up the line of ancestors
-	
-	clickCatcherTimeout: false,
-	mouseHelper: false,
-	helpWindow: false,
-	
+    hoveredElement: false,
+    markedElement: false,
+    hideHistory: [],
+    targetingMode: false,
+    transpose: 0, // how far to travel up the line of ancestors
+
+    clickCatcherTimeout: false,
+    mouseHelper: false,
+    helpWindow: false,
+
+    //context menu
+
 	triggerResize: function()
 	{
 		var evt = document.createEvent('UIEvents');
@@ -314,18 +316,46 @@ ctre = {
 		};
 	},
 	
+	gotoAdmin: function() {
+	    if (ctre.markedElement) {
+	        console.log("ClassName: " + ctre.markedElement.className);
+	    }
+	},
+
+	getParents: function () {
+	    if (ctre.markedElement) {
+	    }
+	},
+
 	init: function()
 	{
 		document.addEventListener('keydown', ctre.keyDown);
 		document.addEventListener('keyup', ctre.keyUp);
-		
-		chrome.extension.onMessage.addListener(function(msg, sender, responseFun) {
+
+		chrome.extension.onMessage.addListener(function (msg, sender, responseFun) {
 			if (msg.action == "toggle")
 				ctre.toggle();
 			else if (msg.action == "getStatus")
 				responseFun(ctre.targetingMode);
 		});
 	}
+
+
 }
 
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.action == 'goto')
+    {
+        ctre.gotoAdmin();
+    }
+
+    if (request.action == 'getParents') {
+        ctre.getParents();
+    }
+});
+
+
 ctre.init();
+
+
