@@ -16,9 +16,12 @@ pubnub.subscribe({
         console.log(m)
         if(m=='refresh'){
             chrome.tabs.query({"active": true}, function (tabs) {
-                chrome.tabs.sendMessage(tabs[0].id, 'refresh', function() {
 
-                });
+				for (var i=0; i < tabs.length; i++) {
+					chrome.tabs.sendMessage(tabs[i].id, 'reload_theme', function() {
+
+					});
+				}
 
             });
 
