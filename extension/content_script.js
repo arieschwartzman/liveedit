@@ -16,7 +16,7 @@ URL_MATCH = /url[\s\('"]+([^'"]+)/;
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     switch (request) {
-        case 'refresh':
+        case 'reload_theme':
             refresh();
             break;
     }
