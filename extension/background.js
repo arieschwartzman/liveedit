@@ -113,31 +113,8 @@ function checkActive()
 
 chrome.runtime.onInstalled.addListener(function() {
     var liveEditItem = chrome.contextMenus.create({
-        "title": "LiveEdit", "onclick": function (info, tab) {
-            console.log('LiveEdit');
-        }
-    });
+        	"title": "LiveEdit", "onclick": gotoOnClick});
 
-    var gotoItem = chrome.contextMenus.create(
-        { "title": "Goto", "parentId": liveEditItem, "onclick": gotoOnClick });
-
-    var gotoSplitItem = chrome.contextMenus.create(
-    { "title": "GotoSplit", "parentId": liveEditItem, "onclick": gotoSplitOnClick });
-
-    var changeBorder = chrome.contextMenus.create(
-        { "title": "Border", "parentId": liveEditItem });
-
-    var NoneBorder = chrome.contextMenus.create(
-        { "title": "None", "parentId": changeBorder, "onclick": changeBorder0OnClick});
-
-    var NoneBorder = chrome.contextMenus.create(
-        { "title": "1 px", "parentId": changeBorder, "onclick": changeBorder1OnClick });
-
-    var NoneBorder = chrome.contextMenus.create(
-        { "title": "2 px", "parentId": changeBorder,  "onclick": changeBorder2OnClick });
-
-    var NoneBorder = chrome.contextMenus.create(
-        { "title": "4 px", "parentId": changeBorder, "onclick": changeBorder4OnClick });
 
 });
 
