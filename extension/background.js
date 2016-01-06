@@ -31,7 +31,7 @@ pubnub.subscribe({
 function publish(msgName, msgData) {
     pubnub.publish({
         channel: "theme_update",
-        message: { msgName: msgData }
+        message: { msgName: msgName, msgData: msgData }
     });
 
 }
@@ -101,10 +101,22 @@ chrome.runtime.onInstalled.addListener(function() {
     });
 
     var gotoItem = chrome.contextMenus.create(
-      { "title": "Goto", "parentId": liveEditItem, "onclick": gotoOnClick });
+        { "title": "Goto", "parentId": liveEditItem, "onclick": gotoOnClick });
 
-    var gotoItem = chrome.contextMenus.create(
-      { "title": "Border", "parentId": liveEditItem, "onclick": changeBorderOnClick });
+    var changeBorder = chrome.contextMenus.create(
+        { "title": "Border", "parentId": liveEditItem });
+
+    var NoneBorder = chrome.contextMenus.create(
+        { "title": "None", "parentId": changeBorder, "onclick": changeBorderOnClick });
+
+    var NoneBorder = chrome.contextMenus.create(
+        { "title": "1 px", "parentId": changeBorder, "onclick": changeBorderOnClick });
+
+    var NoneBorder = chrome.contextMenus.create(
+        { "title": "2 px", "parentId": changeBorder, "onclick": changeBorderOnClick });
+
+    var NoneBorder = chrome.contextMenus.create(
+        { "title": "4 px", "parentId": changeBorder, "onclick": changeBorderOnClick });
 
 });
 
