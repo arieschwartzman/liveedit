@@ -15,14 +15,7 @@ ctre = {
     mouseHelper: false,
     helpWindow: false,
 
-    //context menu
-
-	triggerResize: function()
-	{
-		var evt = document.createEvent('UIEvents');
-		evt.initUIEvent('resize', true, false,window,0);
-		window.dispatchEvent(evt);
-	},
+    
 	
 	highlightElement: function()
 	{
@@ -104,16 +97,6 @@ ctre = {
 			if (ctre.targetingMode) ctre.deactivate();
 		}
 		
-		if (ctre.targetingMode && (e.keyCode == 8 || e.keyCode == 90))
-		{
-			var elm = ctre.hideHistory.pop();
-			
-			if (elm)
-			{
-				elm.style.display = elm.origDisplay;
-				ctre.triggerResize();
-			}
-		}
 		
 		if (ctre.targetingMode && e.keyCode == 81) // q
 		{
@@ -133,11 +116,6 @@ ctre = {
 	
 	keyUp: function(e)
 	{
-		if (ctre.targetingMode && (e.keyCode == 8 || e.keyCode == 90))
-		{
-			e.stopPropagation(); e.preventDefault();
-			return false;
-		}
 		
 		if (ctre.targetingMode && e.keyCode == 81) // q
 		{
@@ -152,33 +130,6 @@ ctre = {
 		}
 	},
 	
-	hideTarget: function()
-	{
-		if (ctre.markedElement.tagName.toLowerCase() == 'body')
-		{
-			ctre.markedElement.style.background = 'transparent';
-		}
-		else if (ctre.markedElement.tagName.toLowerCase() == 'html')
-		{
-			ctre.markedElement.style.background = 'transparent';
-		}
-		else
-		{
-			ctre.markedElement.origDisplay = ctre.markedElement.style.display;
-			ctre.markedElement.style.display = "none";
-			ctre.hideHistory.push(ctre.markedElement);
-			
-			if (ctre.markedElement.className == "ctre_overlay") ctre.markedElement.relatedElement.style.display = "none";
-			
-			ctre.triggerResize();
-			setTimeout(function() {
-				ctre.removeOverlays();
-				ctre.addOverlays();
-			}, 10);
-		}
-		
-		return false;
-	},
 	
 	
 	onFirstActivation: function()
@@ -196,7 +147,7 @@ ctre = {
 		div.style.opacity = 0.0001;
 		div.style.cursor = "default";
 		
-		div.addEventListener('click', ctre.hideTarget);
+//		div.addEventListener('click', ctre.hideTarget);
 		ctre.mouseHelper = div;
 		
 		div = document.createElement('div');
