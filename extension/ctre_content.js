@@ -6,6 +6,7 @@
 ctre = {
     hoveredElement: false,
     markedElement: false,
+    contextMarkedElement: false,
     hideHistory: [],
     targetingMode: false,
     transpose: 0, // how far to travel up the line of ancestors
@@ -78,6 +79,14 @@ ctre = {
 		ctre.clickCatcherTimeout = setTimeout(function() { ctre.mouseHelper.style.display = "block"; }, 10);
 	},
 	
+	contextmenu:  function(e) {
+	    if (ctre.markedElement) {
+	        ctre.contextMarkedElement = ctre.markedElement;
+	    } else {
+	        ctre.contextMarkedElement = false;
+	    }
+	},
+
 	keyDown: function(e)
 	{
 		if (e.ctrlKey && e.shiftKey && e.keyCode == 88)
@@ -223,7 +232,8 @@ ctre = {
 		ctre.targetingMode = true;
 		document.addEventListener('mouseover', ctre.mouseover, true);
 		document.addEventListener('mousemove', ctre.mousemove);
-		
+		document.oncontextmenu = ctre.contextmenu;
+
 		ctre.mouseHelper.style.display = "block";
 		ctre.helpWindow.style.display = "block";
 		
@@ -248,7 +258,8 @@ ctre = {
 		
 		document.removeEventListener('mouseover', ctre.mouseover, true);
 		document.removeEventListener('mousemove', ctre.mousemove);
-		
+		document.removeEventListener('contextmenu', ctre.contextMenu);
+
 		ctre.removeOverlays();
 		
 		chrome.extension.sendMessage({action: 'status', active: false});
@@ -318,17 +329,19 @@ ctre = {
 
     // the function finds the highlight element class name and send it to admin through PubNub
 	gotoAdmin: function() {
-	    if (ctre.markedElement) {
-	        console.log("ClassName: " + ctre.markedElement.className);
-	        chrome.extension.sendMessage({ action: 'gotoAdmin', msgName:  ctre.markedElement.className} );
+	    if (ctre.contextMarkedElement) {
+	        console.log("gotoAdmin: function --> ClassName: " + ctre.contextMarkedElement.className);
+	        chrome.extension.sendMessage({ action: 'gotoAdmin', msgName: ctre.contextMarkedElement.className });
 	    }
 	},
 
-    // the function selects specific parent element of the highlighted elements.
-	getParents: function () {
-	    if (ctre.markedElement) {
+    // the function finds the highlight element class name and send it to admin through PubNub
+	changeBorder: function () {
+	    if (ctre.contextMarkedElement) {
+	        chrome.extension.sendMessage({ action: 'changeBorder', msgName: ctre.contextMarkedElement.className });
 	    }
 	},
+
 
 	init: function()
 	{
@@ -353,9 +366,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         ctre.gotoAdmin();
     }
 
-    if (request.action == 'getParents') {
-        ctre.getParents();
-    }
 });
 
 
