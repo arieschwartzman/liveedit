@@ -30,6 +30,7 @@ function refresh() {
         .getTime())
         .toString(36);
 
+
     for (i = 0; i < document.styleSheets.length; i++) {
         update = false;
         item = document.styleSheets[i];
