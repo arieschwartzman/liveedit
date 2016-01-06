@@ -2,6 +2,36 @@
 	CTRE v1.0.3
 	by @blade_sk
 */
+console.log("in ext 1");
+var pubnub = PUBNUB.init({
+    subscribe_key: 'sub-c-ae38e384-b45b-11e5-a916-0619f8945a4f', // always required
+    publish_key: 'pub-c-cc7ebb2a-df4f-433a-aae1-076955b3534d'    // only required if publishing
+});
+
+pubnub.subscribe({
+
+    channel: "theme_update",
+    message: function(m){
+
+        console.log(m)
+        if(m=='refresh'){
+            chrome.tabs.query({"active": true}, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, 'refresh', function() {
+
+                });
+
+            });
+        }
+    }
+});
+
+function publish(msgName) {
+    pubnub.publish({
+        channel: "theme_update",
+        message: { "goto": msgName }
+    });
+
+}
 
 function sendMsg(values)
 {
@@ -79,7 +109,12 @@ chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
 	if (msg.action == 'status' && msg.active == true)
 		setActive();
 	else if (msg.action == 'status' && msg.active == false)
-		setInactive()
+	    setInactive()
+
+    // Send class name through pubnub
+	else if (msg.action == 'gotoAdmin') {
+	    publish(msg.msgName);
+	}
 });
 
 chrome.tabs.onActivated.addListener(function(activeInfo) {

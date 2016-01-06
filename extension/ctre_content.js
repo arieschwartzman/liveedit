@@ -316,12 +316,16 @@ ctre = {
 		};
 	},
 	
+
+    // the function finds the highlight element class name and send it to admin through PubNub
 	gotoAdmin: function() {
 	    if (ctre.markedElement) {
 	        console.log("ClassName: " + ctre.markedElement.className);
+	        chrome.extension.sendMessage({ action: 'gotoAdmin', msgName:  ctre.markedElement.className} );
 	    }
 	},
 
+    // the function selects specific parent element of the highlighted elements.
 	getParents: function () {
 	    if (ctre.markedElement) {
 	    }
@@ -345,7 +349,7 @@ ctre = {
 
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request.action == 'goto')
+    if (request.action == 'goto')  
     {
         ctre.gotoAdmin();
     }
