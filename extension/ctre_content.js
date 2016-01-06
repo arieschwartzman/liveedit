@@ -209,11 +209,10 @@ ctre = {
 		div.style.color = "#666666";
 		div.style.zIndex = 100000;
 		div.style.display = "none";
-		div.innerHTML = '<b style="font-size: 12px;">Click to remove element</b> v1.0.4 &nbsp;&nbsp;&nbsp; <span style="color: #888; font-family:  monospace;">Ctrl+Shift+X</span>'
+		div.innerHTML = '<b style="font-size: 12px;">Live Edit Element</b> &nbsp;&nbsp;&nbsp; <span style="color: #888; font-family:  monospace;">Ctrl+Shift+X</span>'
 			+'<div style="margin-top: 6px;"></div><span style="font-family: monospace;">Ctrl+Z</span> undo, <span style="font-family: monospace;">ESC</span> exit<br>'
-			+'<span style="font-family: monospace;">Q/W</span> go down/up one level. Currently up <span id="transpose" style="font-weight: bold;">0</span> level<span id="transpose_plural">s</span>.'
-			+'<div style="margin-top: 6px;"></div>Like this extension? <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=NUVLGGXDAXDTJ&lc=SK&item_name=CTRE%20Chrome%20extension&item_number=CTRE&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted" target="_blank" style="color: #888; text-decoration: underline; font-weight: normal; border: 0;">Please consider donating</a>.';
-		
+			+'<span style="font-family: monospace;">Q/W</span> go down/up one level. Currently up <span id="transpose" style="font-weight: bold;">0</span> level<span id="transpose_plural">s</span>'
+
 		ctre.helpWindow = div;
 	},
 	
