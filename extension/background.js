@@ -45,10 +45,33 @@ function gotoOnClick(info, tab) {
     }
 }
 
-function changeBorderOnClick(info, tab) {
+function gotoSplitOnClick(info, tab) {
     if (tab) {
-        chrome.tabs.sendMessage(tab.id, { action: "changeBorder" }, function (response) { });
+        chrome.tabs.sendMessage(tab.id, { action: "gotoSplit" }, function (response) { });
     }
+}
+
+function changeBorderOnClick(tab,borderSize) {
+    if (tab) {
+        console.log(borderSize);
+        chrome.tabs.sendMessage(tab.id, { action: "changeBorder", borderSize: borderSize }, function (response) { });
+    }
+}
+
+function changeBorder0OnClick(info, tab) {
+    changeBorderOnClick(tab,"0");
+}
+
+function changeBorder1OnClick(info, tab) {
+    changeBorderOnClick(tab,"1");
+}
+
+function changeBorder2OnClick(info, tab) {
+    changeBorderOnClick(tab,"2");
+}
+
+function changeBorder4OnClick(info, tab) {
+    changeBorderOnClick(tab,"4");
 }
 
 function setActive() {
@@ -98,20 +121,23 @@ chrome.runtime.onInstalled.addListener(function() {
     var gotoItem = chrome.contextMenus.create(
         { "title": "Goto", "parentId": liveEditItem, "onclick": gotoOnClick });
 
+    var gotoSplitItem = chrome.contextMenus.create(
+    { "title": "GotoSplit", "parentId": liveEditItem, "onclick": gotoSplitOnClick });
+
     var changeBorder = chrome.contextMenus.create(
         { "title": "Border", "parentId": liveEditItem });
 
     var NoneBorder = chrome.contextMenus.create(
-        { "title": "None", "parentId": changeBorder, "onclick": changeBorderOnClick });
+        { "title": "None", "parentId": changeBorder, "onclick": changeBorder0OnClick});
 
     var NoneBorder = chrome.contextMenus.create(
-        { "title": "1 px", "parentId": changeBorder, "onclick": changeBorderOnClick });
+        { "title": "1 px", "parentId": changeBorder, "onclick": changeBorder1OnClick });
 
     var NoneBorder = chrome.contextMenus.create(
-        { "title": "2 px", "parentId": changeBorder, "onclick": changeBorderOnClick });
+        { "title": "2 px", "parentId": changeBorder,  "onclick": changeBorder2OnClick });
 
     var NoneBorder = chrome.contextMenus.create(
-        { "title": "4 px", "parentId": changeBorder, "onclick": changeBorderOnClick });
+        { "title": "4 px", "parentId": changeBorder, "onclick": changeBorder4OnClick });
 
 });
 
@@ -132,12 +158,21 @@ chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
 	    publish("goto" ,msg.msgName);
 	}
 
+	else if (msg.action == 'gotoSplit') {
+	    console.log("BackgroundMsg --> ClassName: " + msg.msgName);
+
+	    publish("gotoSplit", msg.msgName);
+	}
+
 	    // Send border size through pubnub
 	else if (msg.action == 'changeBorder') {
 	    console.log("BackgroundMsg --> changeBorder");
 
-	    publish("changeBorder", msg.msgName);
-	}
+	    pubnub.publish({
+	        channel: "theme_update",
+	        message: { msgName: "changeBorder", msgData: msg.msgData, borderSize: msg.borderSize }
+	    });
+    }
 });
 
 chrome.tabs.onActivated.addListener(function(activeInfo) {

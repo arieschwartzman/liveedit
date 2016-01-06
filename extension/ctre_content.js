@@ -14,7 +14,6 @@ ctre = {
     clickCatcherTimeout: false,
     mouseHelper: false,
     helpWindow: false,
-
     
 	
 	highlightElement: function()
@@ -174,6 +173,7 @@ ctre = {
 			+'<span style="font-family: monospace;">Q/W</span> go down/up one level. Currently up <span id="transpose" style="font-weight: bold;">0</span> level<span id="transpose_plural">s</span>'
 
 		ctre.helpWindow = div;
+
 	},
 	
 	activate: function()
@@ -187,7 +187,7 @@ ctre = {
 
 		ctre.mouseHelper.style.display = "block";
 		ctre.helpWindow.style.display = "block";
-		
+
 		ctre.addOverlays();
 		
 		chrome.extension.sendMessage({action: 'status', active: true});
@@ -286,10 +286,37 @@ ctre = {
 	    }
 	},
 
-    // the function finds the highlight element class name and send it to admin through PubNub
-	changeBorder: function () {
+	gotoAdminSpecificClass: function (className) {
 	    if (ctre.contextMarkedElement) {
-	        chrome.extension.sendMessage({ action: 'changeBorder', msgName: ctre.contextMarkedElement.className });
+	        console.log("gotoAdmin: function --> ClassName: " + className);
+	        chrome.extension.sendMessage({ action: 'gotoSplit', msgName: className });
+	    }
+	},
+
+    // the function finds the highlight element class name and send it to admin through PubNub
+	changeBorder: function (borderSize) {
+	    if (ctre.contextMarkedElement) {
+	        chrome.extension.sendMessage({ action: 'changeBorder', msgData: ctre.contextMarkedElement.className, borderSize: borderSize });
+	    }
+	},
+
+	createPopup: function()
+	{
+	    if (ctre.contextMarkedElement) {
+	        var popup = open("", "Popup", "width=300,height=200");
+	        var res = ctre.contextMarkedElement.className.split(" ");
+	        for (var i = 0; i < res.length; i++) {
+	            var element = popup.document.createElement("input");
+	            element.type = "submit";
+	            element.id = res[i];
+	            element.value = res[i];
+	            element.setAttribute("name", res[i]);
+	            element.onclick = function () { // Note this is a function
+	                ctre.gotoAdminSpecificClass(this.id);
+	                popup.close();
+	            };
+	            popup.document.body.appendChild(element);
+	        }
 	    }
 	},
 
@@ -314,7 +341,15 @@ ctre = {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.action == 'goto')  
     {
-        ctre.gotoAdmin();
+         ctre.gotoAdmin();
+    }
+
+    if (request.action == 'gotoSplit') {
+        ctre.createPopup();
+    }
+
+    if (request.action == 'changeBorder') {
+        ctre.changeBorder(request.borderSize);
     }
 
 });
