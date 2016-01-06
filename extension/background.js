@@ -57,7 +57,7 @@ function parentsOnClick(info, tab) {
 }
 
 function setActive() {
-    var liveEditItem  = chrome.contextMenus.create({
+    var liveEditItem = chrome.contextMenus.create({
         "title": "LiveEdit", "onclick": function (info, tab) {
             console.log('LiveEdit');
         }
@@ -116,6 +116,8 @@ chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
 
     // Send class name through pubnub
 	else if (msg.action == 'gotoAdmin') {
+	    console.log("BackgroundMsg --> ClassName: " + msg.msgName);
+
 	    publish(msg.msgName);
 	}
 });
