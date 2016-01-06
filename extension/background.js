@@ -1,8 +1,3 @@
-/*
-	CTRE v1.0.3
-	by @blade_sk
-*/
-console.log("in ext 1");
 var pubnub = PUBNUB.init({
     subscribe_key: 'sub-c-ae38e384-b45b-11e5-a916-0619f8945a4f', // always required
     publish_key: 'pub-c-cc7ebb2a-df4f-433a-aae1-076955b3534d'    // only required if publishing
